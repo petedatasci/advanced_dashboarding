@@ -2,8 +2,14 @@
 title: "Advanced Dashboarding"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: row
     vertical_layout: fill
+    social: ["menu"]
+    source_code: embed
+    theme: 
+      version: 4
+      bootswatch: sandstone
+      
 editor_options: 
   chunk_output_type: console
 ---
@@ -28,20 +34,42 @@ extrafont::loadfonts(device = "win")
 data("penguins")
 ```
 
-Column {data-width=650}
+Plots page {data-navmenu="Navigation"}
+=======================================================================
+
+Sidebar {.sidebar}
+-----------------------------------------------------------------------
+
+### Penguins Stats
+
+The number of penguins in the data is `r nrow(penguins)`
+
+Row
+-----------------------------------------------------------------------
+
+### Number of penguins
+
+```{r}
+valueBox(nrow(penguins), icon = "fa-linux")
+```
+
+
+
+
+Column {.tabset}
 -----------------------------------------------------------------------
 
 ### Chart A
 
 ```{r}
-penguins %>% 
+plot1 <- penguins %>% 
   ggplot(aes(x = bill_length_mm, y = bill_depth_mm, colour = species)) +
   geom_point() +
   labs(title = "Penguins scatterplot")
+
+ggplotly(plot1)
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
 
 ### Chart B
 
@@ -61,5 +89,15 @@ penguins %>%
   facet_wrap(~species) +
   labs(title = "Penguins histogram") +
   theme(legend.position = "none")
+```
+
+Data {data-navmenu="Navigation"}
+=======================================================================
+
+```{r}
+penguins %>% 
+  datatable(extensions = "Buttons",
+            options = list(dom = "Blfrtip",
+                           buttons = c("copy", "csv", "excel", "pdf", "print"))) #B = add buttons, "lfrtip" are default
 ```
 
